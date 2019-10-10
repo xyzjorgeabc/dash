@@ -1,0 +1,13 @@
+SIMPLIFICAR SPRITES.
+
+IMPLEMENTAR ROTACIÓN HORIZONTAL.
+/*
+        ctx.save();
+        // translate context to center 
+        ctx.translate(this.pos.x + this.size.x / 2, this.pos.y - this.size.y / 2);
+
+      // flip context horizontally
+        ctx.scale(-1, 1);
+        ctx.drawImage(this.img,0, 0, this.size.x, this.size.y);
+        ctx.restore();
+*/
