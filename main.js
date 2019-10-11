@@ -150,72 +150,37 @@ class map{
     readAssets(){
 
         const a = this.assets;
-        const skeleton = fetch("sprites/Objects/Skeleton.png").then(function(r){
-            if(r.ok){
-                return r.blob({type: "image/png"});
-            }
-        })
-        .then(function(r){return URL.createObjectURL(r);})
+        const skeleton = read_sprite('Skeleton.png')
         .then(function(r){
             a.bouncer = new Image();
             a.bouncer.src = r;
         });
-        const redPot = fetch("sprites/Tiles/red_pot.png").then(function(r){
-            if(r.ok){
-                return r.blob({type: "image/png"});
-            }
-        })
-        .then(function(r){return URL.createObjectURL(r);})
+        const redPot = read_sprite('red_pot.png')
         .then(function(r){
             a.pots[0] = new Image();
             a.pots[0].src = r;
         });
-        const purplePot = fetch("sprites/Tiles/purple_pot.png").then(function(r){
-            if(r.ok){
-                return r.blob({type: "image/png"});
-            }
-        })
-        .then(function(r){return URL.createObjectURL(r);})
+        const purplePot = read_sprite('purple_pot.png')
         .then(function(r){
             a.pots[1] = new Image();
             a.pots[1].src = r;
         });
-        const hp = fetch("sprites/Tiles/hp.png").then(function(r){
-            if(r.ok){
-                return r.blob({type: "image/png"});
-            }
-        })
-        .then(function(r){return URL.createObjectURL(r);})
+        const hp = read_sprite('hp.png')
         .then(function(r){
             a.hp = new Image();
             a.hp.src = r;
         });
-        const fire = fetch("sprites/Objects/flame_sprite.png").then(function(r){
-            if(r.ok){
-                return r.blob({type: "image/png"});
-            }
-        })
-        .then(function(r){return URL.createObjectURL(r);})
+        const fire = read_sprite('flame_sprite.png')
         .then(function(r){
             a.fire = new Image();
             a.fire.src = r;
         });
-        const ghost = fetch("sprites/Tiles/ghost.png").then(function(r){
-            if(r.ok){
-                return r.blob({type: "image/png"});
-            }
-        })
-        .then(function(r){return URL.createObjectURL(r);})
+        const ghost = read_sprite('ghost.png')
         .then(function(r){
             a.dash[0] = new Image();
             a.dash[0].src = r;
         });
-        const ghostAttack = fetch("sprites/Tiles/ghost_attack.png").then(function(r){
-            if(r.ok){
-                return r.blob({type: "image/png"});
-            }
-        })
-        .then(function(r){return URL.createObjectURL(r);})
+        const ghostAttack = read_sprite('ghost_attack.png')
         .then(function(r){
             a.dash[1] = new Image();
             a.dash[1].src = r;
@@ -223,13 +188,7 @@ class map{
 
         const tiles = [];
         for(let i = 1; i <= 18; i++){
-            tiles.push(fetch("sprites/Tiles/Tile" +i+ ".png").then(function(r){
-                if(r.ok){
-
-                    return r.blob({type: "image/png"});
-                }
-            })
-            .then( function(r){return URL.createObjectURL(r);})
+            tiles.push(read_sprite('Tile' + i + '.png')
             .then( function(r){
                 a.block[i] = new Image();
                 a.block[i].src = r;
@@ -237,59 +196,35 @@ class map{
         }
         const coin = [];
         for(let i = 1; i <= 6; i++){
-            coin.push(fetch("sprites/Objects/coin" +i+ ".png").then(function(r){
-                if(r.ok){
-                    return r.blob({type: "image/png"});
-                }
-            })
-            .then(function(r){return URL.createObjectURL(r);})
+            coin.push(read_sprite("coin" + i + ".png")
             .then(function(r){
                 a.coin[i] = new Image();
                 a.coin[i].src = r;
             }));
         }
         const minion = [];
-        minion.push(fetch("sprites/Tiles/soul_left.png").then(function(r){
-            if(r.ok){
-                return r.blob({type: "image/png"});
-            }
-        })
-        .then(function(r){return URL.createObjectURL(r);})
+        minion.push(read_sprite('soul_left.png')
         .then(function(r){
             a.minion[0] = new Image();
             a.minion[0].src = r;
         }));
-        minion.push(fetch("sprites/Tiles/soul_right.png").then(function(r){
-            if(r.ok){
-                return r.blob({type: "image/png"});
-            }
-        })
-        .then(function(r){return URL.createObjectURL(r);})
+        minion.push(read_sprite('soul_right.png')
         .then(function(r){
             a.minion[1] = new Image();
             a.minion[1].src = r;
         }));
         const genie = [];
-        genie.push(fetch("sprites/Tiles/genie_red_left.png").then(function(r){
-            if(r.ok){
-                return r.blob({type: "image/png"});
-            }
-        })
-        .then(function(r){return URL.createObjectURL(r);})
+        genie.push(read_sprite('genie_red_left.png')
         .then(function(r){
             a.blueGenie[0] = new Image();
             a.blueGenie[0].src = r;
         }));
-        genie.push(fetch("sprites/Tiles/genie_red_right.png").then(function(r){
-            if(r.ok){
-                return r.blob({type: "image/png"});
-            }
-        })
-        .then(function(r){return URL.createObjectURL(r);})
+        genie.push(read_sprite('genie_red_right.png')
         .then(function(r){
             a.blueGenie[1] = new Image();
             a.blueGenie[1].src = r;
         }));
+
         let allProm = [skeleton, redPot, purplePot, hp, fire, ghost, ghostAttack];
         allProm = allProm.concat(tiles, coin, genie);
         const self = this;
@@ -437,7 +372,7 @@ class map{
                                 if(map[i-1] && map[i-1][ind-1] !== 1 &&
                                     map[i-1] && map[i-1][ind+1] !== 1
                                     ) bits--;
-                                else if(map[i-1] && map[i-1][ind-1] !== 1) bits++;
+                                else if(map[i-1] && map[i-1][ind-1] !== 1)bits++;
                                 else if(map[i-1] && map[i-1][ind+1] !== 1)bits+=2;
                                 else if(map[i+1] && map[i+1][ind+1] !== 1)bits+=3;
                                 else if(map[i+1] && map[i+1][ind-1] !== 1)bits+=4;
@@ -618,7 +553,7 @@ class spike extends entity {
         ctx.closePath();
     }
     frame(){
-        
+
     }
 }
 
