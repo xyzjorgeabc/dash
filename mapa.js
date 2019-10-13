@@ -27,13 +27,6 @@ class Mapa {
           throwable: [],
           meteor: []
       };
-      this.controller = {
-          37: false,
-          38: false,
-          39: false,
-          40: false,
-          17: false
-      };
       this.assets = {
           dash: [],
           spike: void 0,
@@ -67,7 +60,7 @@ class Mapa {
       const coin      = this.entities.coin;
       const block     = this.entities.block;
       const bouncer   = this.entities.bouncer;
-      
+      const minion    = this.entities.minion;
       for(let i = 0; i < throwable.length; i++){
           if(dash.isCollidingWith(throwable[i])){
               dash.hp--;
@@ -84,6 +77,9 @@ class Mapa {
               dash.coins++;
               i--;
           }
+      }
+      for(let i = 0; i < minion.length; i++){
+        if (dash.isCollidingWith(minion[i]));
       }
       for(let i = 0; i < block.length; i++){
           if (dash.isCollidingWith(block[i]));
@@ -261,7 +257,7 @@ class Mapa {
           for(let i = 0; i < this.entities.throwable.length; i++)
               this.entities.throwable[i].frame();
           
-          this.entities.dash.frame(this.controller);
+          this.entities.dash.frame();
       }
       this.drawEntities();
   }

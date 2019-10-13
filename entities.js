@@ -192,7 +192,7 @@ class Dash extends Movable{
                           dvbottom >= evtop &&
                           dvtop    <= evbottom;
       
-      if(isColliding){
+      if(isColliding) {
           const left   = this.vel.x <= 0 && dvright >= evright && Math.abs(dv.y - ev.y) < (pad + epadY);
           const right  = this.vel.x >= 0 && dvright <= evright && Math.abs(dv.y - ev.y) < (pad + epadY);
           const bottom = this.vel.y >= 0 && dvtop <= evtop && Math.abs(dv.x - ev.x) < (pad + epadX);
@@ -221,7 +221,9 @@ class Dash extends Movable{
                   else this.onCollision("bottom", ev.y - v.y - (pad + epadY), true);
               }
           }
-          
+          if ( ent instanceof Throwable || ent instanceof Minion) {
+            this.hp--;
+          }
           return right||bottom||top||left;
       }
  }
@@ -266,23 +268,23 @@ class Dash extends Movable{
           setTimeout(() => { this.attacking = false; }, 100);
       }
   }
-  applyForces(ctrl){
+  applyForces(){
 
       this.applyFriction();
       this.applyGravity();
       
-      if(ctrl[38]) this.jump();
-      if(ctrl[17]) this.attack();
+      if(controller.up) this.jump();
+      if(controller.attack) this.attack();
 
       let xDir = 0;
       let yDir = 0;
       const acc = this.acc;
       if(Math.abs(this.vel.x) + acc.x < this.maxVel.x){
-          if(ctrl[37]) xDir = -1;
-          else if(ctrl[39]) xDir = 1;
+          if(controller.left) xDir = -1;
+          else if(controller.right) xDir = 1;
       }
       if(Math.abs(this.vel.y) + acc.y > this.maxVel.y){
-          if(ctrl[40]) yDir = 1;
+          if(controller.up) yDir = 1;
       }
       
       acc.mult(xDir, yDir);
@@ -298,7 +300,7 @@ class Dash extends Movable{
       this.vel.mult(0.97);
   }
   jump(){
-      if(this.collision.bottom !== null) this.vel.y = -8;
+      if(this.collision.bottom !== null) this.vel.y = -9;
   }
   getRectDiag(){
 
@@ -330,9 +332,9 @@ class Dash extends Movable{
       ctx.rotate(this.rotation * Math.PI/ 180);
       ctx.restore();
   }
-  frame(ctrl){
+  frame(){
      
-      this.applyForces(ctrl);
+      this.applyForces();
       this.rotate();
       this.collision.reset();
   }

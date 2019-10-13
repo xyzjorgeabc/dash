@@ -1,4 +1,4 @@
-function controller(e){
+function keyListener(e){
   const pressed = e.type === 'keydown';
   const key = +e.which;
 
@@ -19,15 +19,10 @@ function controller(e){
       controller.down = pressed;
     break;
   }
-
-  if(key === 17 || key === 37 || key === 38 || key === 39 || key === 40){
-    map.controller[key] = pressed;
-    console.log(key);
-  }
 }
 
-document.addEventListener('keydown', controller);
-document.addEventListener('keyup', controller);
+document.addEventListener('keydown', keyListener);
+document.addEventListener('keyup', keyListener);
 document.addEventListener('click', function(){
   if(map.state === READY){
     map.readMap(LVL1);
@@ -42,6 +37,7 @@ function loop(){
 }
 
 let eventManager;
+const controller = new Controller();
 const map = new Mapa();
 ASSETS.load().then(function(){
   map.state = READY;
