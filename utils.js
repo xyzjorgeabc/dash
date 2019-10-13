@@ -79,3 +79,26 @@ class Vector{
       return new Vector(this.x,this.y);
   }
 }
+
+class Timer {
+  constructor(){
+    this.start = Date.now();
+  }
+  restart(){
+    this.start = Date.now();
+  }
+  get elapsed () {
+    return Date.now() - this.start;
+  }
+}
+
+class Controller {
+  constructor(){
+    this.jump = false;
+    this.attack = false;
+    this.left = false;
+    this.right = false;
+    this.up = false;
+    this.down = false;
+  }
+}

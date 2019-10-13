@@ -163,7 +163,7 @@ class Dash extends Movable{
           }
       };
       this.attacking = false;
-      this.lastAttack = Date.now();
+      this.attackTimer = new Timer();
       this.hp = 5;
       this.coins = 0;
   }   
@@ -259,16 +259,11 @@ class Dash extends Movable{
       }
   
   }
-  isAttacking(){
-      return this.attacking;
-  }
   attack(){
-      const now = Date.now();
-      if(now - this.lastAttack > 500){
-          this.lastAttack = now;
+      if(this.attackTimer.elapsed > 500){
+          this.attackTimer.restart();
           this.attacking = true;
-          const self = this;
-          setTimeout(function(){self.attacking = false;}, 100);
+          setTimeout(() => { this.attacking = false; }, 100);
       }
   }
   applyForces(ctrl){
@@ -384,7 +379,7 @@ class Boss extends Movable {
   constructor(x, y){
       super(x, y, 100);
       this.state = null;
-      this.lastAttack = Date.now();
+      this.attackTimer = new Timer();
   }
   activate(){
       this.state = "active";
@@ -392,9 +387,8 @@ class Boss extends Movable {
       this.displayDialogue();
   }
   attack(){
-      const now = Date.now();
-      if(now - this.lastAttack > 1000){
-          this.lastAttack = now;
+      if(this.attackTimer.elapsed > 1000){
+          this.attackTimer.restart();
           eventManager.shotEventEmiter.emitir(this.pos);
       }
   }

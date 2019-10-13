@@ -252,7 +252,7 @@ class Mapa {
           for(let i = 0; i < this.entities.coin.length; i++){
               this.entities.coin[i].frame();
           }
-          for(let i = 0; i  < this.entities.boss.length; i++)
+          for(let i = 0; i < this.entities.boss.length; i++)
               this.entities.boss[i].frame();
           
           for(let i = 0; i < this.entities.minion.length; i++)
@@ -262,7 +262,6 @@ class Mapa {
               this.entities.throwable[i].frame();
           
           this.entities.dash.frame(this.controller);
-
       }
       this.drawEntities();
   }
