@@ -1,4 +1,3 @@
-let sqa,sqb,sqc,sqd;
 const LVL1 = [
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -14,13 +13,13 @@ const LVL1 = [
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,6,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,3,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,2,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,6,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,6,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 ];
 
@@ -64,46 +63,20 @@ class Vector{
     }
 }
 
-class EventDispatcher{
-
-    constructor(){
-        this.observer = map;
-        this.eventQueue = [];
-    }
-    addEvent(ev, ent){
-        this.eventQueue.push({type: ev, entity: ent});
-    }
-    clearQueue(){
-        this.eventQueue = [];
-    }
-    getEvents(type){
-        if(type)
-        return this.eventQueue.filter( function(ev){
-            return ev.type === type;
-        });
-        else return this.eventQueue;
-    }
-    static get shot(){
-        return 1;
-    };
-    static get onScreen(){
-        return 2;
-    }
-    static get dead(){
-        return 3;
-    }
-    static get pause(){
-        return 4;
-    }
-    static get resume(){
-        return 5;
+class EventManager {
+    constructor() {
+        this.shotEventEmiter = new Emisor();
+        this.deadEventEmiter = new Emisor();
+        this.pauseEventEmiter = new Emisor();
+        this.resumeEventEmiter = new Emisor();
     }
 }
 
-class map{
+class Mapa {
 
-    constructor(){
-        evm = new EventDispatcher();
+    constructor(eventManager){
+        evm2 = new EventManager();
+        this.EventManager = evm2;
         this.viewport = {
             scale: 50,
             size: new Vector(c.width, c.height),
@@ -144,8 +117,21 @@ class map{
             blueGenie:[],
             pots: [],
             hp: void 0,
+            fire: void 0
         };
         this.state = null;
+        this.EventManager.shotEventEmiter.suscribir((pos) => {
+            this.entities.throwable.push(new Throwable(pos.x, pos.y, this.entities.dash.pos, this.assets.fire));
+        });
+        this.EventManager.deadEventEmiter.suscribir(() => {
+            
+        });
+        this.EventManager.pauseEventEmiter.suscribir(() => {
+            this.state = PAUSE;
+        });
+        this.EventManager.resumeEventEmiter.suscribir(() => {
+            this.state = RESUME;
+        });
     }
     readAssets(){
 
@@ -175,7 +161,7 @@ class map{
             a.fire = new Image();
             a.fire.src = r;
         });
-        const ghost = read_sprite('ghost.png')
+        const ghost = read_sprite('ghost_shield.png')
         .then(function(r){
             a.dash[0] = new Image();
             a.dash[0].src = r;
@@ -419,46 +405,9 @@ class map{
         }
 
     }
-    eventManagement(){
-
-        const onsc = evm.getEvents(EventDispatcher.onScreen); 
-        const shot = evm.getEvents(EventDispatcher.shot);
-        const dead = evm.getEvents(EventDispatcher.dead);
-        const pause = evm.getEvents(EventDispatcher.pause);
-        const resume = evm.getEvents(EventDispatcher.resume);
-        
-        if(resume.length){
-            this.state = null; // resume; 
-        }
-        if(pause.length){
-            this.state = EventDispatcher.pause; // pause;
-        }
-        else if(onsc.length){
-            this.state = EventDispatcher.onScreen;
-        }
-        for(let i = 0; i < shot.length; i++){
-            this.entities.throwable.push( 
-                new throwable(shot[i].entity.pos.x, shot[i].entity.pos.y, this.entities.dash.pos, this.assets.fire
-                ));
-        }
-        for(let i = 0; i < dead.length; i++){
-            let entityType;
-            let ind = i;
-            switch(dead[i].entity.constructor){
-                case genie:
-                    entityType = "boss";
-                    break;
-            }
-            this.entities[entityType].splice(this.entities[entityType].findIndex(function(ent){
-                return ent === dead[ind];
-            }), 1);
-        }
-        evm.clearQueue();
-    }
     frame(){
         this.activateBoss();
-        this.eventManagement();
-        if(this.state !== EventDispatcher.pause){
+        if(this.state !== PAUSE){
             this.detectCollision();
             this.entities.dash.outOfMapDetection(this.map.size);
             for(let i = 0; i < this.entities.coin.length; i++){
@@ -687,21 +636,21 @@ class dash  extends movable{
 
                 if(right && !(ent instanceof movable) && !this.collision.right){
                     if(ent instanceof bouncer) void 0;
-                    else this.onCollision("right", ev.x - v.x  - (pad + epadX), true);
+                    else this.onCollision("right", ev.x - v.x - (pad + epadX), true);
                 }
                 if(left && !(ent instanceof movable) && !this.collision.left){
                     if(ent instanceof bouncer) void 0;
-                    else this.onCollision("left", ev.x - v.x  + (pad + epadX), true);
+                    else this.onCollision("left", ev.x - v.x + (pad + epadX), true);
                 }
             }else {
 
                 if(top && !(ent instanceof movable) && !this.collision.top){
                     if(ent instanceof bouncer) this.onCollision("top", -10, false);
-                    else this.onCollision("top", ev.y - v.y  + (pad + epadY), true);
+                    else this.onCollision("top", ev.y - v.y + (pad + epadY), true);
                 } 
-                if(bottom && !(ent instanceof movable) && !this.collision.bottom){ 
-                    if(ent instanceof bouncer) this.onCollision("bottom", -12, false);    
-                    else this.onCollision("bottom", ev.y - v.y  - (pad + epadY), true);
+                if(bottom && !(ent instanceof movable) && !this.collision.bottom){
+                    if(ent instanceof bouncer) this.onCollision("bottom", -12, false);
+                    else this.onCollision("bottom", ev.y - v.y - (pad + epadY), true);
                 }
             }
             
@@ -725,7 +674,7 @@ class dash  extends movable{
             case "left":
                 this.collision.left = stop;
                 this.vel.x = mtd;
-                break;    
+                break;
         }
     }
     outOfMapDetection(v){
@@ -783,17 +732,7 @@ class dash  extends movable{
         this.vel.add(gravity);
     }
     applyFriction(){
-        let friction = 0.1;
-        let dir;
-        if(Math.abs(this.vel.x) < friction){
-            this.vel.x = 0;
-        }
-
-        if(this.vel.x < 0) dir = 1;
-        else if (this.vel.x > 0) dir = -1;
-        else dir = 0;
-        friction *= dir;
-        this.vel.x += friction;
+        this.vel.mult(0.97);
     }
     jump(){
         if(this.collision.bottom !== null) this.vel.y = -8;
@@ -814,17 +753,6 @@ class dash  extends movable{
             const r = 90 - this.rotation % 90;
             this.rotation += r < 15 ? r : 15;
         }
-        
-        const diag = this.getRectDiag();
-        
-        sqa = new Vector(this.pos.x + (diag * Math.cos((this.rotation + 45) * Math.PI / 180)), 
-                         this.pos.y + (diag * Math.sin((this.rotation + 45) * Math.PI / 180)));
-        sqb = new Vector(this.pos.x + (diag * Math.cos((this.rotation + 135) * Math.PI / 180)),
-                         this.pos.y + (diag * Math.sin((this.rotation + 135) * Math.PI / 180)));
-        sqc = new Vector(this.pos.x + (diag * Math.cos((this.rotation + 225) * Math.PI / 180)), 
-                         this.pos.y + (diag * Math.sin((this.rotation + 225) * Math.PI / 180)));
-        sqd = new Vector(this.pos.x + (diag * Math.cos((this.rotation + 315) * Math.PI / 180)), 
-                         this.pos.y + (diag * Math.sin((this.rotation + 315) * Math.PI / 180)));
     }
     get img(){
 
@@ -838,16 +766,6 @@ class dash  extends movable{
         ctx.translate(Math.ceil(this.pos.x), Math.ceil(this.pos.y));
         ctx.rotate(this.rotation * Math.PI/ 180);
         ctx.restore();
-        if(sqa){
-            ctx.fillStyle = "red";
-            ctx.fillRect(sqa.x - 4, sqa.y - 4,  8, 8);
-            ctx.fillStyle = "blue";
-            ctx.fillRect(sqb.x - 4, sqb.y - 4,  8, 8);
-            ctx.fillStyle = "green";
-            ctx.fillRect(sqc.x - 4, sqc.y - 4,  8, 8);
-            ctx.fillStyle = "white";
-            ctx.fillRect(sqd.x - 4, sqd.y - 4,  8, 8);
-        }
     }
     frame(ctrl){
        
@@ -858,7 +776,7 @@ class dash  extends movable{
     
 }
 
-class throwable extends movable{
+class Throwable extends movable{
 
     constructor(x, y, delta, sprite){
         super(x,y,50);
@@ -903,19 +821,17 @@ class boss extends movable {
     }
     activate(){
         this.state = "active";
-        evm.addEvent(EventDispatcher.onScreen, this);
-        evm.addEvent(EventDispatcher.pause, this);
+        evm2.pauseEventEmiter.emitir();
         this.displayDialogue();
     }
     attack(){
         const now = Date.now();
         if(now - this.lastAttack > 1000){
             this.lastAttack = now;
-            evm.addEvent(EventDispatcher.shot, this);
+            evm2.shotEventEmiter.emitir(this.pos);
         }
     }
-    displayDialogue(){
-        const self = this;
+    displayDialogue() {
         const dialogues = this.dialogue;
         let i = 0;
         function d(){
@@ -923,7 +839,7 @@ class boss extends movable {
             i++;
             if(i >= dialogues.length)
                 setTimeout(function(){
-                    evm.addEvent(EventDispatcher.resume, self);
+                    evm2.resumeEventEmiter.emitir();
                 }, 2000);
             else setTimeout(d, 2000);
         }
@@ -931,8 +847,6 @@ class boss extends movable {
 
     }
 }
-
-
 
 class genie extends boss {
     
@@ -948,7 +862,6 @@ class genie extends boss {
         ];
     }
     draw(ctx){
-        //super.draw(ctx) esta gente no puede hacer nada bien.
         this.drawImage(ctx);
     }
     get img(){
@@ -1038,8 +951,6 @@ class minion extends movable{
     }
 }
 
-
-
-let evm;
-const b = new map();
+let evm2;
+const b = new Mapa();
 b.readAssets();

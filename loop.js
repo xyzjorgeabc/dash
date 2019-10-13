@@ -16,7 +16,7 @@ document.addEventListener('click', function(){
     if(b.state === "ready"){
         b.readMap(LVL1);
         requestAnimationFrame(loop);
-        b.state = "on"
+        b.state = "on";
     }
 });
 
