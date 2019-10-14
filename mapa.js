@@ -17,31 +17,19 @@ class Mapa {
           size: new Vector(LVL1[0].length * this.viewport.scale, LVL1.length * this.viewport.scale)
       };
       this.entities = {
-          Dash: void 0,
-          block: [],
-          coin: [],
-          spike: [],
-          bouncer: [],
-          minion: [],
-          boss: [],
-          throwable: [],
-          meteor: []
-      };
-      this.assets = {
-          dash: [],
-          spike: void 0,
-          coin: [],
-          block: [],
-          bouncer: void 0,
-          minion: [],
-          blueGenie:[],
-          pots: [],
-          hp: void 0,
-          fire: void 0
+          dash: void 0,
+          blocks: new Set(),
+          coins: new Set(),
+          spikes: new Set(),
+          bouncers: new Set(),
+          minions: new Set(),
+          bosses: new Set(),
+          throwables: new Set(),
+          meteors: new Set()
       };
       this.state = null;
       this.EventManager.shotEventEmiter.suscribir((pos) => {
-          this.entities.throwable.push(new Throwable(pos.x, pos.y, this.entities.dash.pos, ASSETS.fire));
+          this.entities.throwables.add(new Throwable(pos.x, pos.y, this.entities.dash.pos, ASSETS.fire));
       });
       this.EventManager.deadEventEmiter.suscribir(() => {
           
@@ -54,101 +42,91 @@ class Mapa {
       });
   }
   detectCollision(){
-      const dash      = this.entities.dash;
-      const spike     = this.entities.spike;
-      const throwable = this.entities.throwable;
-      const coin      = this.entities.coin;
-      const block     = this.entities.block;
-      const bouncer   = this.entities.bouncer;
-      const minion    = this.entities.minion;
-      for(let i = 0; i < throwable.length; i++){
-          if(dash.isCollidingWith(throwable[i])){
-              dash.hp--;
-              this.entities.throwable.splice(i, 1);
-              i--;
-          }
-      }
-      for(let i = 0; i < spike.length; i++){
-          if(dash.isCollidingWith(spike[i]));
-      }
-      for(let i = 0; i < coin.length; i++){
-          if (dash.isCollidingWith(coin[i])){
-              this.entities.coin.splice(i, 1);
-              dash.coins++;
-              i--;
-          }
-      }
-      for(let i = 0; i < minion.length; i++){
-        if (dash.isCollidingWith(minion[i]));
-      }
-      for(let i = 0; i < block.length; i++){
-          if (dash.isCollidingWith(block[i]));
-      }
-      for(let i = 0; i < bouncer.length; i++){
-          if (dash.isCollidingWith(bouncer[i]));
-      }
+      const dash       = this.entities.dash;
+      const spikes     = this.entities.spikes;
+      const throwables = this.entities.throwables;
+      const coins      = this.entities.coins;
+      const blocks     = this.entities.blocks;
+      const bouncers   = this.entities.bouncers;
+      const minions    = this.entities.minions;
+
+      throwables.forEach(function(throwable){
+        if(dash.isCollidingWith(throwable)){
+          throwables.delete(throwable);
+          dash.hp--;
+        }
+      });
+      spikes.forEach( function(spike){
+        dash.isCollidingWith(spike);
+      } );
+      coins.forEach(function(coin){
+        if (dash.isCollidingWith(coin)){
+          coins.delete(coin);
+          dash.coins++;
+        }
+      });
+      minions.forEach(function(minion) {
+        dash.isCollidingWith(minion);
+      });
+      blocks.forEach(function(block){
+        dash.isCollidingWith(block);
+      });
+      bouncers.forEach(function(bouncer) {
+        dash.isCollidingWith(bouncer);
+      });
   }
   drawEntities(){
+    const ctx     = this.viewport.ctx;
+    const scale   = this.viewport.scale;
+    const pad     = new Vector(this.viewport.size.x/3,75);
+    const offSet  = this.viewport.offSet;
+    const dashPos = this.entities.dash.pos;
+    const offSetVelX = Math.abs(this.entities.dash.vel.x) || this.entities.dash.maxVel.x;
+    const offSetVelY = Math.abs(this.entities.dash.vel.y) || this.entities.dash.maxVel.y;
+    const maxOffSetX = this.map.size.x * scale - this.viewport.size.x;
+    const maxOffSetY = this.map.size.y * scale - this.viewport.size.y;
+    
+    if(dashPos.x > this.viewport.size.x - pad.x + offSet.x && offSet.x < maxOffSetX){
+        offSet.x += offSetVelX;
+    }
+    else if(dashPos.x < offSet.x + pad.x && offSet.x > 0){
+        offSet.x -= offSetVelX;
+    }
+    if(dashPos.y > this.viewport.size.y - pad.y + offSet.y && offSet.y < maxOffSetY ){
+        offSet.y += offSetVelY;
+    }
+    else if(dashPos.y < pad.y + offSet.y && offSet.y > 0){
+        offSet.y -= offSetVelY;
+    }
+    
+    ctx.clearRect(0,0,this.viewport.size.x, this.viewport.size.y);
+    ctx.save();
+    ctx.translate(-offSet.x, -offSet.y);
+    this.entities.spikes.forEach(function(spike){
+      spike.draw(ctx);
+    });
+    this.entities.coins.forEach(function (coin) {
+      coin.draw(ctx);
+    });
+    this.entities.blocks.forEach( function(block) {
+      block.draw(ctx);
+    });
+    this.entities.bouncers.forEach(function(bouncer){
+      bouncer.draw(ctx);
+    });
+    this.entities.minions.forEach(function(minion){
+      minion.draw(ctx);
+    });
+    this.entities.bosses.forEach(function(boss){
+      boss.draw(ctx);
+    });
+    this.entities.throwables.forEach(function(throwable){
+      throwable.draw(ctx);
+    });
+    this.entities.dash.draw(ctx);
 
-      const ctx     = this.viewport.ctx;
-      const scale   = this.viewport.scale;
-      const pad     = new Vector(this.viewport.size.x/3,75);
-      const offSet  = this.viewport.offSet;
-      const dashPos = this.entities.dash.pos;
-      const offSetVelX = Math.abs(this.entities.dash.vel.x) || this.entities.dash.maxVel.x;
-      const offSetVelY = Math.abs(this.entities.dash.vel.y) || this.entities.dash.maxVel.y;
-      const maxOffSetX = this.map.size.x * scale - this.viewport.size.x;
-      const maxOffSetY = this.map.size.y * scale - this.viewport.size.y;
-      
-      if(dashPos.x > this.viewport.size.x - pad.x + offSet.x && offSet.x < maxOffSetX){
-          offSet.x += offSetVelX;
-      }
-      else if(dashPos.x < offSet.x + pad.x && offSet.x > 0){
-          offSet.x -= offSetVelX;
-      }
-      if(dashPos.y > this.viewport.size.y - pad.y + offSet.y && offSet.y < maxOffSetY ){
-          offSet.y += offSetVelY;
-      }
-      else if(dashPos.y < pad.y + offSet.y && offSet.y > 0){
-          offSet.y -= offSetVelY;
-      }
-      
-      ctx.clearRect(0,0,this.viewport.size.x, this.viewport.size.y);
-      ctx.save();
-      ctx.translate(-offSet.x, -offSet.y);
-      
-      for(let i = 0; i < this.entities.spike.length; i++){
-          this.entities.spike[i].draw(ctx);
-      }
-
-      for(let i = 0; i < this.entities.coin.length; i++){
-          this.entities.coin[i].draw(ctx);
-      }
-
-      for(let i = 0; i < this.entities.block.length; i++){
-          this.entities.block[i].draw(ctx);
-      }
-
-      for(let i = 0; i < this.entities.bouncer.length; i++){
-          this.entities.bouncer[i].draw(ctx);
-      }
-      
-      for(let i = 0; i < this.entities.minion.length; i++){
-          this.entities.minion[i].draw(ctx);
-      }
-      
-      for(let i = 0; i < this.entities.boss.length; i++){
-          this.entities.boss[i].draw(ctx);
-      }
-
-      for(let i = 0; i < this.entities.throwable.length; i++){
-          this.entities.throwable[i].draw(ctx);
-      }
-
-      this.entities.dash.draw(ctx);
-
-      ctx.restore();
-      this.drawGUI();
+    ctx.restore();
+    this.drawGUI();
   }
   drawGUI(){
       
@@ -200,26 +178,26 @@ class Mapa {
                               else if(map[i+1] && map[i+1][ind+1] !== 1)bits+=3;
                               else if(map[i+1] && map[i+1][ind-1] !== 1)bits+=4;
                           }
-                          this.entities.block.push(new Block(base + ind * scale, base + i * scale, bits));
+                          this.entities.blocks.add(new Block(base + ind * scale, base + i * scale, bits));
                           break; 
                       case 2:
-                          this.entities.spike.push(new spike(base + ind * scale, base + i * scale));
+                          this.entities.spikes.add(new spike(base + ind * scale, base + i * scale));
                           break;
                       case 3:
-                          this.entities.bouncer.push(new Bouncer(base + ind * scale, base + i * scale));
+                          this.entities.bouncers.add(new Bouncer(base + ind * scale, base + i * scale));
                           break; 
                       case 4:
-                          this.entities.coin.push(new Coin(base + ind * scale, base + i * scale));
+                          this.entities.coins.add(new Coin(base + ind * scale, base + i * scale));
                           break;
                       case 5:
-                          this.entities.meteor.push(new Entity(base + ind * scale, base + i * scale));
+                          this.entities.meteors.add(new Entity(base + ind * scale, base + i * scale));
                           break;
                       case 6:
                           const displacement = Minion.calcMaxDisplacement(map, scale, ind ,i);
-                          this.entities.minion.push(new Minion(base + ind * scale, base + i * scale, displacement));
+                          this.entities.minions.add(new Minion(base + ind * scale, base + i * scale, displacement));
                           break;
                       default: //boss
-                          this.entities.boss.push(new Genie(base + ind * scale, base + i * scale));
+                          this.entities.bosses.add(new Genie(base + ind * scale, base + i * scale));
                           break;
                   }
               }
@@ -229,34 +207,30 @@ class Mapa {
       this.entities.dash = new Dash(base, base + (map.length - 2) * scale);
   }   
   activateBoss(){
-      const bosses = this.entities.boss;
-      
-      for(let i = 0; i < bosses.length; i++){
-
-          if(bosses[i].state === null){
-              const diff = this.viewport.offSet.diffTo(bosses[i].pos);
-              if(diff.x < this.viewport.size.x - 100) bosses[i].activate();
-          }
-
+      this.entities.bosses.forEach((boss)=>{
+        if(boss.state === null){
+          const diff = this.viewport.offSet.diffTo(boss.pos);
+          if(diff.x < this.viewport.size.x - 100) boss.activate();
       }
+      });
   }
   frame(){
       this.activateBoss();
       if(this.state !== PAUSE){
           this.detectCollision();
           this.entities.dash.outOfMapDetection(this.map.size);
-          for(let i = 0; i < this.entities.coin.length; i++){
-              this.entities.coin[i].frame();
-          }
-          for(let i = 0; i < this.entities.boss.length; i++)
-              this.entities.boss[i].frame();
-          
-          for(let i = 0; i < this.entities.minion.length; i++)
-              this.entities.minion[i].frame();
-  
-          for(let i = 0; i < this.entities.throwable.length; i++)
-              this.entities.throwable[i].frame();
-          
+          this.entities.coins.forEach(function(coin){
+            coin.frame();
+          });
+          this.entities.bosses.forEach(function(boss){
+            boss.frame();
+          });
+          this.entities.minions.forEach(function(minion){
+            minion.frame();
+          });
+          this.entities.throwables.forEach(function(throwable){
+            throwable.frame();
+          });
           this.entities.dash.frame();
       }
       this.drawEntities();

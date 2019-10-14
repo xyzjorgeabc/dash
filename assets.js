@@ -39,7 +39,7 @@ function load() {
       a.fire = new Image();
       a.fire.src = r;
   });
-  const ghost = read_sprite('ghost_shield.png')
+  const ghost = read_sprite('ghost.png')
   .then(function(r){
       a.dash[0] = new Image();
       a.dash[0].src = r;

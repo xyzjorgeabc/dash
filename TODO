@@ -10,5 +10,3 @@ IMPLEMENTAR ROTACIÓN HORIZONTAL.
         ctx.drawImage(this.img,0, 0, this.size.x, this.size.y);
         ctx.restore();
 */
-
-implementar imnunidad de dash para no perder vida en cada fotograma.

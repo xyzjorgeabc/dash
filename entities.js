@@ -23,10 +23,6 @@ class Movable extends Entity{
   drawImage(ctx){
       ctx.drawImage(this.img,this.pos.x - this.size.x/2, this.pos.y - this.size.y/2, this.size.x, this.size.y);
   }
-  getPoint(num){
-      return new Vector(this.pos.x + (this.rectDiag * Math.cos((this.rotation + 45 * num) * Math.PI / 180)),
-                        this.pos.y + (this.rectDiag * Math.cos((this.rotation + 45 * num) * Math.PI / 180)));
-  }
 }
 
 class Bouncer extends Entity{
@@ -108,11 +104,6 @@ class Coin extends Movable{
       this.acc = new Vector(0, 0.05);
       this.maxVel = new Vector(1,1);
   }
-  getPoint(rad){
-      const base = this.pos.clone();
-      const pad  = new Vector(this.size/2 * Math.cos(rad), this.size/2 * Math.sin(rad));
-      return base.add(pad);
-  }
   get img(){
       if(Math.ceil(this.spriteIndex) > this.sprite.length-1) this.spriteIndex = 1;
       this.spriteIndex += 0.05;
@@ -144,9 +135,8 @@ class Dash extends Movable{
   constructor(x,y){
       super(x,y,50);
       this.imgs = ASSETS.dash;
-      this.rotation = 0;
       this.defAcc = new Vector(0.5,0.5);
-      this.collision =  {
+      this.collision = {
           top: null,
           bottom: null,
           right: null,
@@ -162,8 +152,8 @@ class Dash extends Movable{
               this.left   = null;
           }
       };
-      this.attacking = false;
       this.attackTimer = new Timer();
+      this.imnunityTimer = new Timer();
       this.hp = 5;
       this.coins = 0;
   }   
@@ -222,7 +212,10 @@ class Dash extends Movable{
               }
           }
           if ( ent instanceof Throwable || ent instanceof Minion) {
-            this.hp--;
+            if (this.imnunityTimer.elapsed > 1000) {
+              this.hp--;
+              this.imnunityTimer.restart();
+            }
           }
           return right||bottom||top||left;
       }
@@ -264,8 +257,6 @@ class Dash extends Movable{
   attack(){
       if(this.attackTimer.elapsed > 500){
           this.attackTimer.restart();
-          this.attacking = true;
-          setTimeout(() => { this.attacking = false; }, 100);
       }
   }
   applyForces(){
@@ -309,19 +300,8 @@ class Dash extends Movable{
       
       return Math.sqrt(x+y);
   }
-  rotate(){
-      if(this.rotation === 360) this.rotation = 0;
-      
-      if(this.vel.y !== 0 ) this.rotation += 10;
-      else if (this.collision.bottom !== null && this.rotation % 90 !== 0){
-          
-          const r = 90 - this.rotation % 90;
-          this.rotation += r < 15 ? r : 15;
-      }
-  }
   get img(){
-
-      if(this.attacking) return this.imgs[1];
+      if(this.attackTimer.elapsed < 101) return this.imgs[1];
       else return this.imgs[0];
   }
   draw(ctx){
@@ -329,13 +309,11 @@ class Dash extends Movable{
       this.drawImage(ctx);
       ctx.save();
       ctx.translate(Math.ceil(this.pos.x), Math.ceil(this.pos.y));
-      ctx.rotate(this.rotation * Math.PI/ 180);
       ctx.restore();
   }
   frame(){
      
       this.applyForces();
-      this.rotate();
       this.collision.reset();
   }
   
