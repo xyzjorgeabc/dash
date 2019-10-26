@@ -11,14 +11,11 @@
 }
 
 #game {
-
     display: flex;
     justify-content: center;
-
 }
 
 #c {
-
     /*background-image: url("/sprites/BG.png");*/
     background-color: black;
 }

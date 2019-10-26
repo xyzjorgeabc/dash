@@ -34,6 +34,14 @@ function load() {
       a.hp = new Image();
       a.hp.src = r;
   });
+  const fire_ball = [];
+  for(let i = 1; i <= 6; i++){
+    fire_ball.push(read_sprite('fireball' + i + '.png')
+    .then( function(r){
+        a.fire_ball[i] = new Image();
+        a.fire_ball[i].src = r;
+    }));
+}
   const fire = read_sprite('flame_sprite.png')
   .then(function(r){
       a.fire = new Image();
@@ -49,7 +57,11 @@ function load() {
       a.dash[1] = new Image();
       a.dash[1].src = r;
   });
-
+  const spike = read_sprite('spike.png')
+  .then(function(r){
+      a.spike = new Image();
+      a.spike.src = r;
+  });
   const tiles = [];
   for(let i = 1; i <= 18; i++){
       tiles.push(read_sprite('Tile' + i + '.png')
@@ -89,7 +101,7 @@ function load() {
       a.genie[1].src = r;
   }));
 
-  let allProm = [cloud, redPot, purplePot, hp, fire, ghost, ghostAttack];
+  let allProm = [cloud, redPot, purplePot, hp, fire, ghost, ghostAttack, spike, fire_ball];
   allProm = allProm.concat(tiles, coin, genie);
   return Promise.all(allProm);
 }

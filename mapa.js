@@ -129,7 +129,6 @@ class Mapa {
     this.drawGUI();
   }
   drawGUI(){
-      
       const ctx   = this.viewport.ctx;
       const hp    = this.entities.dash.hp;
       const coins = this.entities.dash.coins;
@@ -201,7 +200,7 @@ class Mapa {
                           break;
                   }
               }
-          }
+          } 
       }
       
       this.entities.dash = new Dash(base, base + (map.length - 2) * scale);

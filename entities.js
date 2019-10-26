@@ -2,9 +2,9 @@ class Entity {
 
   constructor(x,y,size){
 
-      this.pos  = new Vector(x,y);
-      this.size = new Vector(size, size);
-      this.sprites = [];
+    this.pos  = new Vector(x,y);
+    this.size = new Vector(size, size);
+    this.sprites = [];
 
   }
 }
@@ -44,13 +44,16 @@ class Bouncer extends Entity{
   draw(ctx){
       ctx.drawImage(this.img,this.points.p1.x, this.points.p1.y, this.size.x, this.size.y);
   }
+  getSprite() {
+    return new Sprite(this.img, this.pos.clone(), this.size.clone());
+  }
 }
 
 class spike extends Entity {
 
   constructor(x,y){
       super(x,y,50);
-
+      this.img = ASSETS.spike;
       this.points = {
           p1: new Vector(x - this.size.x/2, y + this.size.y/2),
           p2: new Vector(x, y - this.size.y/2),
@@ -65,8 +68,8 @@ class spike extends Entity {
       ctx.fill();
       ctx.closePath();
   }
-  frame(){
-
+  getSprite(){
+    return new Sprite(this.img, this.pos.clone(), this.size.clone());
   }
 }
 
@@ -91,6 +94,9 @@ class Block extends Entity{
   draw(ctx){
       ctx.drawImage(this.img,this.points.p1.x, this.points.p1.y, this.size.x, this.size.y);
   }
+  getSprite() {
+    return new Sprite(this.img, this.pos.clone(), this.size.clone());
+  }
 }
 
 
@@ -99,35 +105,42 @@ class Coin extends Movable{
   constructor(x, y){
 
       super(x,y, 50);
+      this.animationTimer = new Timer();
       this.sprite = ASSETS.coin;
       this.spriteIndex = 1;
       this.acc = new Vector(0, 0.05);
       this.maxVel = new Vector(1,1);
   }
   get img(){
-      if(Math.ceil(this.spriteIndex) > this.sprite.length-1) this.spriteIndex = 1;
-      this.spriteIndex += 0.05;
-      return this.sprite[Math.floor(this.spriteIndex)];
+    if(Math.ceil(this.spriteIndex) > this.sprite.length-1) this.spriteIndex = 1;
+    this.spriteIndex += 0.05;
+    return this.sprite[Math.floor(this.spriteIndex)];
   }
   applyForces(){
-      
-      if(Math.abs(this.vel.x) >= this.maxVel.x)
-          this.acc.x = -this.acc.x;
+    if(Math.abs(this.vel.x) >= this.maxVel.x)
+        this.acc.x = -this.acc.x;
 
-      if(Math.abs(this.vel.y) >= this.maxVel.y)
-          this.acc.y = -this.acc.y;
-      
-      this.vel.add(this.acc);
-      this.pos.add(this.vel);
+    if(Math.abs(this.vel.y) >= this.maxVel.y)
+        this.acc.y = -this.acc.y;
+    
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
   }
   draw(ctx){
-
-      ctx.drawImage(this.img, this.pos.x - this.size.x/2, this.pos.y - this.size.y/2, this.size.x, this.size.y);
+    ctx.drawImage(this.img, this.pos.x - this.size.x/2, this.pos.y - this.size.y/2, this.size.x, this.size.y);
+  }
+  getSprite() {
+    const FRAME_TIME = 300;
+    const FRAMES_COUNT = 6;
+    let frame_i = this.animationTimer.elapsed / FRAME_TIME;
+    if ( frame_i >= FRAMES_COUNT ) {
+      this.animationTimer.reset();
+      frame_i = 1;
+    }
+    return new Sprite(this.sprite[frame_i], this.pos.clone(), this.size.clone());
   }
   frame(){
-
       this.applyForces();
-
   }
 }
 
@@ -187,8 +200,8 @@ class Dash extends Movable{
           const right  = this.vel.x >= 0 && dvright <= evright && Math.abs(dv.y - ev.y) < (pad + epadY);
           const bottom = this.vel.y >= 0 && dvtop <= evtop && Math.abs(dv.x - ev.x) < (pad + epadX);
           const top    = this.vel.y <= 0 && dvbottom >= evbottom && Math.abs(dv.x - ev.x) < (pad + epadX);
-          const xdiff =  Math.abs(ev.x - dv.x);
-          const ydiff =  Math.abs(ev.y - dv.y); 
+          const xdiff  = Math.abs(ev.x - dv.x);
+          const ydiff  = Math.abs(ev.y - dv.y);
           // refactor? simplicidad.
           if(xdiff > ydiff){
 
@@ -200,7 +213,7 @@ class Dash extends Movable{
                   if(ent instanceof Bouncer) void 0;
                   else this.onCollision("left", ev.x - v.x + (pad + epadX), true);
               }
-          }else {
+          } else {
 
               if(top && !(ent instanceof Movable) && !this.collision.top){
                   if(ent instanceof Bouncer) this.onCollision("top", -10, false);
@@ -300,6 +313,13 @@ class Dash extends Movable{
       
       return Math.sqrt(x+y);
   }
+  getSprite(){
+    return new Sprite(
+      this.attackTimer.elapsed < 101 ? this.imgs[1] : this.imgs[0],
+      this.pos.clone(),
+      this.size.clone()
+    );
+  }
   get img(){
       if(this.attackTimer.elapsed < 101) return this.imgs[1];
       else return this.imgs[0];
@@ -327,6 +347,7 @@ class Throwable extends Movable{
       this.rotation = Math.atan2(rDir.y, rDir.x);
       this.maxVel = new Vector(10,10);
       this.vel    = new Vector(this.maxVel.x * rDir.x, this.maxVel.y * rDir.y);
+      this.animationTimer = new Timer();
       this.sprite = ASSETS.fire;
       this.spriteI = 0;
   }
@@ -345,6 +366,16 @@ class Throwable extends Movable{
       ctx.drawImage(this.sprite, this.sprite.height * i, 0, this.sprite.height, this.sprite.height, 0 - this.size.x, 0 - this.size.y, 
                   this.size.x*2, this.size.y*2);
       ctx.restore();
+  }
+  getSprite() {
+    const FRAME_TIME = 200;
+    const FRAMES_COUNT = 6;
+    let frame_i = this.animationTimer.elapsed / FRAME_TIME;
+    if ( frame_i >= FRAMES_COUNT ) {
+      this.animationTimer.reset();
+      frame_i = 1;
+    }
+    return new Sprite(this.sprite[frame_i], this.pos.clone(), this.size.clone(), null, this.rotation);
   }
   applyForces(){
       this.pos.add(this.vel);
@@ -394,7 +425,7 @@ class Genie extends Boss {
   constructor(x, y){
       super(x,y);
       this.acc = new Vector();
-      this.defAcc =  new Vector(0.05, 0.05);
+      this.defAcc = new Vector(0.05, 0.05);
       this.basePos = this.pos.clone();
       this.imgs = ASSETS.genie;
       this.dialogue = [
@@ -408,6 +439,9 @@ class Genie extends Boss {
   get img(){
       if(this.vel.x > 0) return this.imgs[1];
       else  return this.imgs[0];
+  }
+  getSprite() {
+    return  new Sprite( this.vel.x >= 0 ? this.imgs[1] : this.img[0], this.pos.clone(), this.size.clone());
   }
   applyForces(){
       const diff = this.pos.diffTo(this.basePos);
@@ -467,6 +501,9 @@ class Minion extends Movable{
   get img(){
       if(this.vel.x > 0) return this.imgs[1];
       else  return this.imgs[0];
+  }
+  getSprite() {
+    return  new Sprite( this.vel.x >= 0 ? this.imgs[1] : this.img[0], this.pos.clone(), this.size.clone());
   }
   applyForces(){
 

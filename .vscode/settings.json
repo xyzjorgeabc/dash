@@ -1,4 +1,5 @@
 {
-  "editor.fontFamily": "Inconsolata, 'Courier New', monospace,'Fira Code', Hack",
-  "liveServer.settings.port": 5501
+  "editor.fontFamily": "'Input Mono', 'IBM Plex Mono', Inconsolata, 'Courier New', monospace,'Fira Code', Hack",
+  "liveServer.settings.port": 5501,
+  "editor.fontSize": 12
 }

@@ -1,4 +1,4 @@
-const ASSET_DIR = 'sprites/';
+const ASSET_DIR = './sprites/';
 function read_sprite(nombre_archivo) {
   return fetch(ASSET_DIR + nombre_archivo)
   .then(function(resp) {
@@ -9,6 +9,24 @@ function read_sprite(nombre_archivo) {
   .then(function (blob) {
     return URL.createObjectURL(blob);
   });
+}
+
+function overlap(ent1, ent2) {
+
+  const ent1left  = ent1.pos.x - ent1.size.x/2;
+  const ent1right = ent1.pos.x + ent1.size.x/2;
+  const ent1top   = ent1.pos.y - ent1.size.y/2;
+  const ent1bot   = ent1.pos.y + ent1.size.y/2;
+
+  const ent2left  = ent2.pos.x - ent2.size.x/2;
+  const ent2right = ent2.pos.x + ent2.size.x/2;
+  const ent2top   = ent2.pos.y - ent2.size.y/2;
+  const ent2bot   = ent2.pos.y + ent2.size.y/2;
+
+  return ent1left  <= ent2right &&
+         ent1right >= ent2left &&
+         ent1top   <= ent2bot &&
+         ent1bot   >= ent2top;
 }
 
 class Emisor {
@@ -77,6 +95,16 @@ class Vector{
   }
   clone(){
       return new Vector(this.x,this.y);
+  }
+}
+
+class Sprite {
+  constructor(img, pos, size, scale, rotation){
+    this.image = img;
+    this.pos = pos;
+    this.size = size;
+    this.scale = scale || new Vector(1,1);
+    this.rotation = rotation || 0;
   }
 }
 

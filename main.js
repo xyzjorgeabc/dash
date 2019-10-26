@@ -20,7 +20,12 @@ function keyListener(e){
     break;
   }
 }
-
+function setCanvasSize() {
+  c.height = window.innerHeight;
+  c.width  = window.innerWidth;
+}
+setCanvasSize();
+window.addEventListener('resize', setCanvasSize);
 document.addEventListener('keydown', keyListener);
 document.addEventListener('keyup', keyListener);
 document.addEventListener('click', function(){
