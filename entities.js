@@ -4,18 +4,16 @@ class Entity {
 
     this.pos  = new Vector(x,y);
     this.size = new Vector(size, size);
-    this.sprites = [];
 
   }
 }
 
-class Movable extends Entity{
+class Movable extends Entity {
 
   constructor(x,y,size){
       super(x,y,size);
       this.vel    = new Vector();
       this.maxVel = new Vector(5,5);
-      this.defAcc = new Vector();
   }
   outOfMapDetection(v){
       // devuelve boolean;
@@ -25,10 +23,22 @@ class Movable extends Entity{
   }
 }
 
-class Bouncer extends Entity{
+class AliveEntity extends Movable {
+  constructor(x, y, size, hp) {
+    super(x, y, size);
+    this.state = AliveEntity.STATE_SLEEP;
+    this.deathEventEmiter = new Emisor();
+    this.hp = hp;
+  }
+}
+
+AliveEntity.STATE_SLEEP  = 1;
+AliveEntity.STATE_AWAKEN = 2;
+AliveEntity.STATE_DEAD   = 3;
+
+class Bouncer extends Entity {
 
   constructor(x, y){
-
       super(x,y,50);
       this.img = ASSETS.bouncer;
       this.pos.y += this.size.y / 2;
@@ -45,11 +55,11 @@ class Bouncer extends Entity{
       ctx.drawImage(this.img,this.points.p1.x, this.points.p1.y, this.size.x, this.size.y);
   }
   getSprite() {
-    return new Sprite(this.img, this.pos.clone(), this.size.clone());
+    return new Sprite(Sprite.IMAGE_SPRITE, this.img, this.pos.clone(),false, this.size.clone());
   }
 }
 
-class spike extends Entity {
+class Spike extends Entity {
 
   constructor(x,y){
       super(x,y,50);
@@ -69,11 +79,11 @@ class spike extends Entity {
       ctx.closePath();
   }
   getSprite(){
-    return new Sprite(this.img, this.pos.clone(), this.size.clone());
+    return new Sprite(Sprite.IMAGE_SPRITE, this.img, this.pos.clone(), false, this.size.clone());
   }
 }
 
-class Block extends Entity{
+class Block extends Entity {
 
   constructor(x,y, bits){
       super(x,y,50);
@@ -95,16 +105,16 @@ class Block extends Entity{
       ctx.drawImage(this.img,this.points.p1.x, this.points.p1.y, this.size.x, this.size.y);
   }
   getSprite() {
-    return new Sprite(this.img, this.pos.clone(), this.size.clone());
+    return new Sprite(Sprite.IMAGE_SPRITE, this.img, this.pos.clone(), false, this.size.clone());
   }
 }
 
 
-class Coin extends Movable{
+class Coin extends AliveEntity {
 
   constructor(x, y){
 
-      super(x,y, 50);
+      super(x, y, 50, 1);
       this.animationTimer = new Timer();
       this.sprite = ASSETS.coin;
       this.spriteIndex = 1;
@@ -132,46 +142,75 @@ class Coin extends Movable{
   getSprite() {
     const FRAME_TIME = 300;
     const FRAMES_COUNT = 6;
-    let frame_i = this.animationTimer.elapsed / FRAME_TIME;
+    let frame_i = Math.ceil(this.animationTimer.elapsed / FRAME_TIME);
     if ( frame_i >= FRAMES_COUNT ) {
-      this.animationTimer.reset();
+      this.animationTimer.restart();
       frame_i = 1;
     }
-    return new Sprite(this.sprite[frame_i], this.pos.clone(), this.size.clone());
+    return new Sprite(Sprite.IMAGE_SPRITE, this.sprite[frame_i], this.pos.clone(), false, this.size.clone());
   }
   frame(){
       this.applyForces();
   }
 }
 
-class Dash extends Movable{
+class Dash extends AliveEntity {
   constructor(x,y){
-      super(x,y,50);
+      super(x, y, 50, 5);
       this.imgs = ASSETS.dash;
       this.defAcc = new Vector(0.5,0.5);
       this.collision = {
-          top: null,
-          bottom: null,
-          right: null,
-          left: null,
-          is: function is(){
-              if(this.top !== null || this.bottom !== null || this.right !== null || this.left !== null) return true;
-              else return false;
-          },
-          reset: function(){
-              this.top    = null;
-              this.bottom = null;
-              this.right  = null;
-              this.left   = null;
-          }
-      };
+        top: null,
+        bottom: null,
+        right: null,
+        left: null,
+        is: function is(){
+            if(this.top !== null || this.bottom !== null || this.right !== null || this.left !== null) return true;
+            else return false;
+        },
+        reset: function(){
+            this.top    = null;
+            this.bottom = null;
+            this.right  = null;
+            this.left   = null;
+        }
+    };
       this.attackTimer = new Timer();
       this.imnunityTimer = new Timer();
-      this.hp = 5;
       this.coins = 0;
-  }   
+  }
+  resetCollision() {
+    this.collision.top = null;
+    this.collision.bottom = null;
+    this.collision.right = null;
+    this.collision.left = null;
+  }
   get acc(){
       return new Vector(0.5,0.5);
+  }
+  handleInput(controller){
+    if(controller.up) this.jump();
+    if(controller.attack) this.attack();
+
+    let xDir = 0;
+    let yDir = 0;
+
+    if(Math.abs(this.vel.x) + this.acc.x < this.maxVel.x){
+      if(controller.left) xDir = -1;
+      else if(controller.right) xDir = 1;
+    }
+    if(Math.abs(this.vel.y) + this.acc.y > this.maxVel.y){
+      if(controller.up) yDir = 1;
+    }
+    acc.mult(xDir, yDir);
+
+  }
+  _collisionDetection(ent){
+
+    const deltaPos = this.pos.clone();
+    const deltaVel = this.vel.clone();
+    //gravedad
+    
   }
   isCollidingWith(ent){
       const v    = this.pos;
@@ -194,7 +233,7 @@ class Dash extends Movable{
                           dvleft   <= evright &&
                           dvbottom >= evtop &&
                           dvtop    <= evbottom;
-      
+
       if(isColliding) {
           const left   = this.vel.x <= 0 && dvright >= evright && Math.abs(dv.y - ev.y) < (pad + epadY);
           const right  = this.vel.x >= 0 && dvright <= evright && Math.abs(dv.y - ev.y) < (pad + epadY);
@@ -315,17 +354,17 @@ class Dash extends Movable{
   }
   getSprite(){
     return new Sprite(
+      Sprite.IMAGE_SPRITE,
       this.attackTimer.elapsed < 101 ? this.imgs[1] : this.imgs[0],
       this.pos.clone(),
-      this.size.clone()
-    );
+      false,
+      this.size.clone());
   }
   get img(){
       if(this.attackTimer.elapsed < 101) return this.imgs[1];
       else return this.imgs[0];
   }
   draw(ctx){
-      
       this.drawImage(ctx);
       ctx.save();
       ctx.translate(Math.ceil(this.pos.x), Math.ceil(this.pos.y));
@@ -370,12 +409,18 @@ class Throwable extends Movable{
   getSprite() {
     const FRAME_TIME = 200;
     const FRAMES_COUNT = 6;
-    let frame_i = this.animationTimer.elapsed / FRAME_TIME;
+    let frame_i = Math.ceil(this.animationTimer.elapsed / FRAME_TIME);
     if ( frame_i >= FRAMES_COUNT ) {
-      this.animationTimer.reset();
+      this.animationTimer.restart();
       frame_i = 1;
     }
-    return new Sprite(this.sprite[frame_i], this.pos.clone(), this.size.clone(), null, this.rotation);
+    
+    return new Sprite(
+      Sprite.IMAGE_SPRITE,
+      this.attackTimer.elapsed < 101 ? this.sprite[1] : this.sprite[0],
+      this.pos.clone(),
+      false,
+      this.size.clone());
   }
   applyForces(){
       this.pos.add(this.vel);
@@ -385,23 +430,23 @@ class Throwable extends Movable{
   }
 }
 
-class Boss extends Movable {
+class Boss extends AliveEntity {
 
   constructor(x, y){
-      super(x, y, 100);
-      this.state = null;
-      this.attackTimer = new Timer();
+    super(x, y, 100, 10);
+    this.state = Boss.STATE_SLEEP;
+    this.attackTimer = new Timer();
   }
   activate(){
-      this.state = "active";
-      eventManager.pauseEventEmiter.emitir();
-      this.displayDialogue();
+    this.state = Boss.STATE_AWAKEN;
+    eventManager.pauseEventEmiter.emitir();
+    this.displayDialogue();
   }
   attack(){
-      if(this.attackTimer.elapsed > 1000){
-          this.attackTimer.restart();
-          eventManager.shotEventEmiter.emitir(this.pos);
-      }
+    if(this.attackTimer.elapsed > 1000){
+        this.attackTimer.restart();
+        eventManager.shotEventEmiter.emitir(this.pos);
+    }
   }
   displayDialogue() {
       const dialogues = this.dialogue;
@@ -441,7 +486,12 @@ class Genie extends Boss {
       else  return this.imgs[0];
   }
   getSprite() {
-    return  new Sprite( this.vel.x >= 0 ? this.imgs[1] : this.img[0], this.pos.clone(), this.size.clone());
+    return new Sprite(
+      Sprite.IMAGE_SPRITE,
+      this.vel.x >= 0 ? this.imgs[1] : this.img[0],
+      this.pos.clone(),
+      false,
+      this.size.clone());
   }
   applyForces(){
       const diff = this.pos.diffTo(this.basePos);
@@ -462,17 +512,17 @@ class Genie extends Boss {
       this.pos.add(this.vel);
   }
   frame(){
-      if(this.state === null) return void 0;
+      if(this.state === Genie.STATE_SLEEP || this.state === Genie.STATE_DEAD) return void 0;
       this.applyForces();
       this.attack();
   }
 }
 
-class Minion extends Movable{
+class Minion extends AliveEntity {
 
   constructor(x, y, displacement){
 
-      super(x,y, 50);
+      super(x,y, 50, 1);
       this.vel = new Vector(2,0);
       this.maxVel = new Vector(2,0);
       this.imgs = ASSETS.minion;
@@ -495,36 +545,41 @@ class Minion extends Movable{
       return {leftMax: leftMax + scale, rightMax: rightMax};
   }
   draw(ctx){
-      //super.draw(ctx)
-      this.drawImage(ctx);
+    //super.draw(ctx)
+    this.drawImage(ctx);
   }
   get img(){
       if(this.vel.x > 0) return this.imgs[1];
       else  return this.imgs[0];
   }
   getSprite() {
-    return  new Sprite( this.vel.x >= 0 ? this.imgs[1] : this.img[0], this.pos.clone(), this.size.clone());
+    return new Sprite(
+      Sprite.IMAGE_SPRITE,
+      this.vel.x >= 0 ? this.imgs[1] : this.imgs[0],
+      this.pos.clone(),
+      false,
+      this.size.clone());
   }
   applyForces(){
 
-      if(this.vel.x > 0 ){
-          if(this.pos.x + this.size.x/2 >= this.displacement.rightMax)
-              this.vel.x = -this.maxVel.x;
-          else if(this.pos.x + this.size.x/2 + this.vel.x > this.displacement.rightMax){
-              this.vel.x = this.displacement.rightMax - this.pos.x - this.size.x/2;
-          }
+    if(this.vel.x > 0 ){
+      if(this.pos.x + this.size.x/2 >= this.displacement.rightMax)
+        this.vel.x = -this.maxVel.x;
+      else if(this.pos.x + this.size.x/2 + this.vel.x > this.displacement.rightMax){
+        this.vel.x = this.displacement.rightMax - this.pos.x - this.size.x/2;
       }
-      else if(this.vel.x < 0){
-          if(this.pos.x - this.size.x/2 <= this.displacement.leftMax)
-              this.vel.x = this.maxVel.x;
-          else if(this.pos.x  - this.size.x/2 + this.vel.x < this.displacement.leftMax)
-              this.vel.x = this.displacement.leftMax - this.pos.x + this.size.x/2;
-      }
-      this.pos.add(this.vel);
+    }
+    else if(this.vel.x < 0){
+      if(this.pos.x - this.size.x/2 <= this.displacement.leftMax)
+        this.vel.x = this.maxVel.x;
+      else if(this.pos.x  - this.size.x/2 + this.vel.x < this.displacement.leftMax)
+        this.vel.x = this.displacement.leftMax - this.pos.x + this.size.x/2;
+    }
+    this.pos.add(this.vel);
 
   }
   frame(){
-      if(this.state === null) return void 0;
-      this.applyForces();
+    if(this.state === Minion.STATE_DEAD) return void 0;
+    this.applyForces();
   }
 }

@@ -1,6 +1,7 @@
 class Mapa {
 
   constructor(){
+    this.rend = new Render(c);
       eventManager = new EventManager();
       this.EventManager = eventManager;
       this.viewport = {
@@ -76,7 +77,7 @@ class Mapa {
       });
   }
   drawEntities(){
-    const ctx     = this.viewport.ctx;
+    /*const ctx     = this.viewport.ctx;
     const scale   = this.viewport.scale;
     const pad     = new Vector(this.viewport.size.x/3,75);
     const offSet  = this.viewport.offSet;
@@ -102,30 +103,41 @@ class Mapa {
     ctx.clearRect(0,0,this.viewport.size.x, this.viewport.size.y);
     ctx.save();
     ctx.translate(-offSet.x, -offSet.y);
-    this.entities.spikes.forEach(function(spike){
-      spike.draw(ctx);
-    });
-    this.entities.coins.forEach(function (coin) {
-      coin.draw(ctx);
-    });
-    this.entities.blocks.forEach( function(block) {
-      block.draw(ctx);
-    });
-    this.entities.bouncers.forEach(function(bouncer){
-      bouncer.draw(ctx);
-    });
-    this.entities.minions.forEach(function(minion){
-      minion.draw(ctx);
-    });
-    this.entities.bosses.forEach(function(boss){
-      boss.draw(ctx);
-    });
-    this.entities.throwables.forEach(function(throwable){
-      throwable.draw(ctx);
-    });
-    this.entities.dash.draw(ctx);
+    */
+   this.rend.setFocus(this.entities.dash.getSprite());
 
-    ctx.restore();
+    this.entities.spikes.forEach((spike) => {
+      //spike.draw(ctx);
+      this.rend.addSprite(spike.getSprite());
+    });
+    this.entities.coins.forEach((coin) => {
+      //coin.draw(ctx);
+      this.rend.addSprite(coin.getSprite());
+    });
+    this.entities.blocks.forEach( (block) => {
+      //block.draw(ctx);
+      this.rend.addSprite(block.getSprite());
+    });
+    this.entities.bouncers.forEach((bouncer) => {
+      //bouncer.draw(ctx);
+      this.rend.addSprite(bouncer.getSprite());
+    });
+    this.entities.minions.forEach((minion) => {
+      //minion.draw(ctx);
+      this.rend.addSprite(minion.getSprite());
+    });
+    this.entities.bosses.forEach((boss) => {
+      //boss.draw(ctx);
+      this.rend.addSprite(boss.getSprite());
+    });
+    this.entities.throwables.forEach((throwable) => {
+      //throwable.draw(ctx);
+      this.rend.addSprite(throwable.getSprite());
+    });
+    //ctx.restore();
+
+    this.rend.addSprite(this.entities.dash.getSprite());
+    this.rend.render();
     this.drawGUI();
   }
   drawGUI(){
@@ -134,16 +146,29 @@ class Mapa {
       const coins = this.entities.dash.coins;
       const pxl   = Math.floor(Math.log10(coins + 1));
       for(let i = 1; i <= hp; i++){
-          ctx.drawImage(ASSETS.hp, this.viewport.size.x - (this.viewport.scale * i + 20),
-              this.viewport.size.y - this.viewport.scale, this.viewport.scale, this.viewport.scale);
+        this.rend.addSprite(new Sprite(
+          Sprite.IMAGE_SPRITE,
+          ASSETS.hp,
+          new Vector(this.viewport.size.x - (this.viewport.scale * i - 20), this.viewport.size.y - this.viewport.scale / 2),
+          true,
+          new Vector(this.viewport.scale, this.viewport.scale)
+        ));
       }
-      ctx.drawImage(ASSETS.coin[1], this.viewport.size.x - (this.viewport.scale + 20),
-              this.viewport.size.y - this.viewport.scale * 2, this.viewport.scale, this.viewport.scale);
-      
-
-      ctx.fillText(coins + "X", this.viewport.size.x - (this.viewport.scale * 2 + 20 + 25 * pxl),
-              this.viewport.size.y - this.viewport.scale);
-
+      this.rend.addSprite(new Sprite(
+        Sprite.IMAGE_SPRITE,
+        ASSETS.coin[1],
+        new Vector(this.viewport.size.x - this.viewport.scale + 20, this.viewport.size.y - this.viewport.scale * 2 + this.viewport.scale / 2),
+        true,
+        new Vector(this.viewport.scale, this.viewport.scale),
+      ));
+      this.rend.addSprite(new Sprite(
+        Sprite.TEXT_SPRITE,
+        coins + "X",
+        new Vector(this.viewport.size.x - this.viewport.scale * 1.5, this.viewport.size.y - this.viewport.scale / 2),
+        true,
+        new Vector(this.viewport.scale, this.viewport.scale)
+      ));
+        
   }
   readMap(map){
 
@@ -180,7 +205,7 @@ class Mapa {
                           this.entities.blocks.add(new Block(base + ind * scale, base + i * scale, bits));
                           break; 
                       case 2:
-                          this.entities.spikes.add(new spike(base + ind * scale, base + i * scale));
+                          this.entities.spikes.add(new Spike(base + ind * scale, base + i * scale));
                           break;
                       case 3:
                           this.entities.bouncers.add(new Bouncer(base + ind * scale, base + i * scale));
@@ -203,7 +228,7 @@ class Mapa {
           } 
       }
       
-      this.entities.dash = new Dash(base, base + (map.length - 2) * scale);
+      this.entities.dash = new Dash(base*4, base + (map.length - 2) * scale);
   }   
   activateBoss(){
       this.entities.bosses.forEach((boss)=>{

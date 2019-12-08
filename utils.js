@@ -98,16 +98,6 @@ class Vector{
   }
 }
 
-class Sprite {
-  constructor(img, pos, size, scale, rotation){
-    this.image = img;
-    this.pos = pos;
-    this.size = size;
-    this.scale = scale || new Vector(1,1);
-    this.rotation = rotation || 0;
-  }
-}
-
 class Timer {
   constructor(){
     this.start = Date.now();

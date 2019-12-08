@@ -9,6 +9,7 @@ const ASSETS = {
   pots: [],
   hp: void 0,
   fire: void 0,
+  fire_ball: [],
   load: load
 };
 
