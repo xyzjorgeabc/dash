@@ -21,7 +21,6 @@ class Render {
     this.cx.fillStyle = 'white';
     this._sprites = new Set();
     this.focusOffset = new Vector(0,0);
-    this.focusObjetivo = new Vector(0,0);
   }
   addSprite (sprite) {
     if(!sprite.resource){
@@ -38,18 +37,32 @@ class Render {
   clearSprites(){
     this._sprites.clear();
   }
-  setFocus(sprite){
-    /*  const focused_area = {
-      pos: new Vector (this.focusOffset.x + this.canvas.width/2, this.focusOffset.y + this.canvas.height/2 ),
-      size: new Vector(this.canvas.width - 200, this.canvas.height - 200)
-    };
-    if ( !overlap(focused_area, sprite) ) {
-      this.focusOffset = sprite.pos;
-    }*/
-    const focusPos = new Vector(this.canvas.width/2, this.canvas.height - 75);
-    this.focusOffset = sprite.pos.clone();
-    this.focusOffset.subs(focusPos);
+  setFocus(sprite, speed){
     
+    const focused_area = {
+      pos: new Vector (this.focusOffset.x + this.canvas.width/2, this.focusOffset.y + this.canvas.height/2 ),
+      size: new Vector(200, 300)
+    };
+
+    if ( !overlap(focused_area, sprite) ) {
+
+      const diff = sprite.pos.clone().subs(focused_area.pos);
+      let xdistance;
+      let ydistance;
+
+      if ( Math.abs(diff.x) > focused_area.size.x ) {
+        if ( Math.abs(speed.x) >= 0.001 && Math.sign(speed.x) === Math.sign(diff.x)) xdistance = speed.x;
+        else if (diff.x !== 0 ) xdistance = diff.x < 0 ? -5 : 5;
+      }
+      
+      if( Math.abs(diff.y) > focused_area.size.y ) {
+        if ( Math.abs(speed.y) >= 0.001 && Math.sign(speed.y) === Math.sign(diff.y) ) ydistance = speed.y;
+        else if (diff.y !== 0 ) ydistance = diff.y < 0 ? -5 : 5;
+      }
+
+      this.focusOffset.add(new Vector(xdistance, ydistance));;
+    }
+
   }
   render(){
     this.cx.clearRect(0,0,this.canvas.width, this.canvas.height);

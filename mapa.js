@@ -104,7 +104,7 @@ class Mapa {
     ctx.save();
     ctx.translate(-offSet.x, -offSet.y);
     */
-   this.rend.setFocus(this.entities.dash.getSprite());
+   this.rend.setFocus(this.entities.dash.getSprite(), this.entities.dash.vel.clone());
 
     this.entities.spikes.forEach((spike) => {
       //spike.draw(ctx);
